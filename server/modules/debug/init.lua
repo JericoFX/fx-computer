@@ -1,0 +1,11 @@
+-- local Config = lib.load("shared.init_server").DebugLog
+-- local Debug = lib.class("DEBUG")
+-- function Debug:addLog(typeLog,message,sendNotification)
+--     if not Config then return end
+--     local _type = tostring(typeLog) or "warn"
+--     if not lib.print[_type] then return false end
+--     lib.print[_type](message)
+--     return true
+-- end
+
+-- return Debug
