@@ -1,0 +1,1 @@
+-- Config only on client #JericoFX
