@@ -19,8 +19,6 @@ DROP TABLE IF EXISTS mdt_case_people;
 DROP TABLE IF EXISTS mdt_reports;
 DROP TABLE IF EXISTS mdt_cases;
 
-SET FOREIGN_KEY_CHECKS = 1;
-
 /* ==========================================================
    POLICE / MDT
    ========================================================== */
@@ -365,6 +363,7 @@ CREATE TABLE IF NOT EXISTS news_breaking (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+SET FOREIGN_KEY_CHECKS = 1;
 
 DELIMITER $$
 
