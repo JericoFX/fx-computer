@@ -2,6 +2,7 @@
 
 local Config = {}
 Config.DebugLog = true --set to true to fill the console with a bunch of logs
+Config.RequireOnDuty = true
 
 Config.ModuleJobs = {
   medical = { ambulance = true, doctor = true },

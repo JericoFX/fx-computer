@@ -1,20 +1,30 @@
 local Config = lib.load("shared.init_client")
+local QBCore = exports['qb-core']:GetCoreObject()
 local PoliceClient = require "client.modules.police.init"
 local MedicalClient = require "client.modules.medical.init"
 local NewsClient = require "client.modules.news.init"
 
 local playerCid = nil
 
-local function setCid(cid)
-    playerCid = cid
+local function refreshCid()
+    local playerData = QBCore.Functions.GetPlayerData()
+    playerCid = playerData and playerData.citizenid or nil
 end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    TriggerServerEvent('fxcomputer:server:refreshPlayerCid')
+    refreshCid()
 end)
 
-RegisterNetEvent('fxcomputer:client:updateCid', function(cid)
-    setCid(cid)
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    playerCid = nil
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function()
+    refreshCid()
+end)
+
+CreateThread(function()
+    refreshCid()
 end)
 
 RegisterNetEvent('fxcomputer:client:accessResult', function(module, allowed)

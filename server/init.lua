@@ -34,8 +34,13 @@ local function HasModuleAccess(src, module)
     local player = GetQBPlayer(src)
     if not player then return false end
 
-    local jobName = player.PlayerData.job and player.PlayerData.job.name
-    if not jobName then return false end
+    local jobData = player.PlayerData.job
+    if not jobData then return false end
+
+    if Config.RequireOnDuty and jobData.onduty == false then return false end
+
+    local jobName = jobData.name
+    if not jobName or jobName == '' then return false end
 
     local allowed = Config.ModuleJobs[module]
     return allowed and allowed[jobName] == true or false
@@ -61,12 +66,6 @@ end
 
 ---@param src number
 ---@return string|nil
-local function getCitizenId(src)
-    local player = GetQBPlayer(src)
-    if not player then return nil end
-    return player.PlayerData.citizenid
-end
-
 lib.callback.register("fxcomputer:server:police:saveCase", function(source, payload)
     if not HasModuleAccess(source, "police") then return end
     if not isTable(payload) then return end
@@ -237,9 +236,4 @@ RegisterNetEvent('fxcomputer:server:requestAccessCheck', function(module)
     TriggerClientEvent('fxcomputer:client:accessResult', src, module, allowed)
 end)
 
-RegisterNetEvent('fxcomputer:server:refreshPlayerCid', function()
-    local src = source
-    local cid = getCitizenId(src)
-    if not cid then return end
-    TriggerClientEvent('fxcomputer:client:updateCid', src, cid)
-end)
+RegisterNetEvent('fxcomputer:server:refreshPlayerCid', function() end)
