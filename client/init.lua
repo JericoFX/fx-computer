@@ -13,6 +13,14 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     TriggerServerEvent('fxcomputer:server:refreshPlayerCid')
 end)
 
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    setCid(nil)
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function()
+    TriggerServerEvent('fxcomputer:server:refreshPlayerCid')
+end)
+
 RegisterNetEvent('fxcomputer:client:updateCid', function(cid)
     setCid(cid)
 end)

@@ -34,8 +34,13 @@ local function HasModuleAccess(src, module)
     local player = GetQBPlayer(src)
     if not player then return false end
 
-    local jobName = player.PlayerData.job and player.PlayerData.job.name
-    if not jobName then return false end
+    local jobData = player.PlayerData.job
+    if not jobData then return false end
+
+    if Config.RequireOnDuty and jobData.onduty == false then return false end
+
+    local jobName = jobData.name
+    if not jobName or jobName == '' then return false end
 
     local allowed = Config.ModuleJobs[module]
     return allowed and allowed[jobName] == true or false
@@ -66,6 +71,42 @@ local function getCitizenId(src)
     if not player then return nil end
     return player.PlayerData.citizenid
 end
+
+local function sendCidToClient(src, cid)
+    if not src then return end
+    TriggerClientEvent('fxcomputer:client:updateCid', src, cid)
+end
+
+AddEventHandler('QBCore:Server:OnPlayerLoaded', function(Player)
+    local src = Player and Player.PlayerData and Player.PlayerData.source
+    local cid = Player and Player.PlayerData and Player.PlayerData.citizenid
+    if not src or not cid then return end
+    sendCidToClient(src, cid)
+end)
+
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+    local src = Player and Player.PlayerData and Player.PlayerData.source
+    local cid = Player and Player.PlayerData and Player.PlayerData.citizenid
+    if not src or not cid then return end
+    sendCidToClient(src, cid)
+end)
+
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
+    if not src then return end
+    sendCidToClient(src, nil)
+end)
+
+AddEventHandler('QBCore:Server:PlayerUnload', function(src)
+    if not src then return end
+    sendCidToClient(src, nil)
+end)
+
+AddEventHandler('QBCore:Server:OnJobUpdate', function(src)
+    if not src then return end
+    local cid = getCitizenId(src)
+    if not cid then return end
+    sendCidToClient(src, cid)
+end)
 
 lib.callback.register("fxcomputer:server:police:saveCase", function(source, payload)
     if not HasModuleAccess(source, "police") then return end
