@@ -72,6 +72,25 @@ local function isNonEmptyString(s)
   return type(s) == 'string' and #s > 0
 end
 
+---@private
+---@param tableName string
+---@return boolean
+local function assertTableExists(tableName)
+  local rows = MySQL.query.await('SHOW TABLES LIKE ?', { tableName })
+  local exists = rows and #rows > 0
+  if not exists then
+    lib.print.error(('PoliceCase: missing required table "%s" (check sql.sql)'):format(tableName))
+  end
+  return exists
+end
+
+---@private
+local function verifySchema()
+  assertTableExists('mdt_cases')
+  assertTableExists('mdt_case_people')
+  assertTableExists('mdt_evidences')
+end
+
 ---Create a new PoliceCase instance.
 ---If `id` is nil, it represents a new case not yet inserted in DB.
 ---@param id? number
@@ -262,5 +281,7 @@ function PoliceCase.Load(caseId)
 
   return obj
 end
+
+verifySchema()
 
 return PoliceCase

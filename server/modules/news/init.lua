@@ -82,6 +82,25 @@ local function toOptionalNumber(n)
   return v
 end
 
+---@private
+---@param tableName string
+---@return boolean
+local function assertTableExists(tableName)
+  local rows = MySQL.query.await('SHOW TABLES LIKE ?', { tableName })
+  local exists = rows and #rows > 0
+  if not exists then
+    lib.print.error(('NewsArticle: missing required table "%s" (check sql.sql)'):format(tableName))
+  end
+  return exists
+end
+
+---@private
+local function verifySchema()
+  assertTableExists('news_articles')
+  assertTableExists('news_article_media')
+  assertTableExists('news_media')
+end
+
 ---Create a new NewsArticle instance.
 ---Constructor args map 1:1 to DB columns in news_articles.
 ---@param id? number
@@ -327,5 +346,7 @@ function NewsArticle.Load(articleId, includeMedia)
 
   return obj
 end
+
+verifySchema()
 
 return NewsArticle

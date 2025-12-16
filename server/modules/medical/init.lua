@@ -59,6 +59,24 @@ local function isNonEmptyString(s)
   return type(s) == 'string' and #s > 0
 end
 
+---@private
+---@param tableName string
+---@return boolean
+local function assertTableExists(tableName)
+  local rows = MySQL.query.await('SHOW TABLES LIKE ?', { tableName })
+  local exists = rows and #rows > 0
+  if not exists then
+    lib.print.error(('MedicalIncident: missing required table "%s" (check sql.sql)'):format(tableName))
+  end
+  return exists
+end
+
+---@private
+local function verifySchema()
+  assertTableExists('ems_incidents')
+  assertTableExists('ems_lab_results')
+end
+
 ---Create a new MedicalIncident instance.
 ---Constructor args map 1:1 to DB columns in ems_incidents.
 ---@param id? number
@@ -224,5 +242,7 @@ function MedicalIncident.Load(incidentId, includeLabs)
 
   return obj
 end
+
+verifySchema()
 
 return MedicalIncident
