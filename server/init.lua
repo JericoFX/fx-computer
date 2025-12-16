@@ -66,48 +66,6 @@ end
 
 ---@param src number
 ---@return string|nil
-local function getCitizenId(src)
-    local player = GetQBPlayer(src)
-    if not player then return nil end
-    return player.PlayerData.citizenid
-end
-
-local function sendCidToClient(src, cid)
-    if not src then return end
-    TriggerClientEvent('fxcomputer:client:updateCid', src, cid)
-end
-
-AddEventHandler('QBCore:Server:OnPlayerLoaded', function(Player)
-    local src = Player and Player.PlayerData and Player.PlayerData.source
-    local cid = Player and Player.PlayerData and Player.PlayerData.citizenid
-    if not src or not cid then return end
-    sendCidToClient(src, cid)
-end)
-
-AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
-    local src = Player and Player.PlayerData and Player.PlayerData.source
-    local cid = Player and Player.PlayerData and Player.PlayerData.citizenid
-    if not src or not cid then return end
-    sendCidToClient(src, cid)
-end)
-
-AddEventHandler('QBCore:Server:OnPlayerUnload', function(src)
-    if not src then return end
-    sendCidToClient(src, nil)
-end)
-
-AddEventHandler('QBCore:Server:PlayerUnload', function(src)
-    if not src then return end
-    sendCidToClient(src, nil)
-end)
-
-AddEventHandler('QBCore:Server:OnJobUpdate', function(src)
-    if not src then return end
-    local cid = getCitizenId(src)
-    if not cid then return end
-    sendCidToClient(src, cid)
-end)
-
 lib.callback.register("fxcomputer:server:police:saveCase", function(source, payload)
     if not HasModuleAccess(source, "police") then return end
     if not isTable(payload) then return end
@@ -278,9 +236,4 @@ RegisterNetEvent('fxcomputer:server:requestAccessCheck', function(module)
     TriggerClientEvent('fxcomputer:client:accessResult', src, module, allowed)
 end)
 
-RegisterNetEvent('fxcomputer:server:refreshPlayerCid', function()
-    local src = source
-    local cid = getCitizenId(src)
-    if not cid then return end
-    TriggerClientEvent('fxcomputer:client:updateCid', src, cid)
-end)
+RegisterNetEvent('fxcomputer:server:refreshPlayerCid', function() end)
