@@ -1,5 +1,5 @@
-local Config = lib.load("shared.init_client")
 local QBCore = exports['qb-core']:GetCoreObject()
+local Config = lib.load("shared.init_client")
 local PoliceClient = require "client.modules.police.init"
 local MedicalClient = require "client.modules.medical.init"
 local NewsClient = require "client.modules.news.init"
@@ -23,9 +23,11 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function()
     refreshCid()
 end)
 
-CreateThread(function()
-    refreshCid()
-end)
+if Config.DebugData then
+    CreateThread(function() 
+        refreshCid()
+    end)
+end
 
 RegisterNetEvent('fxcomputer:client:accessResult', function(module, allowed)
     if not allowed then
@@ -37,6 +39,8 @@ RegisterNetEvent('fxcomputer:client:accessResult', function(module, allowed)
     end
 end)
 
-PoliceClient.registerNui(playerCid)
-MedicalClient.registerNui(playerCid)
-NewsClient.registerNui(playerCid)
+PoliceClient.registerNui()
+MedicalClient.registerNui()
+NewsClient.registerNui()
+
+

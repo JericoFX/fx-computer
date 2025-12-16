@@ -2,4 +2,6 @@
 
 local Config = {}
 
+Config.DebugData = true
+
 return Config

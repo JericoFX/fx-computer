@@ -1,9 +1,8 @@
 local M = {}
 
 local function safeCallback(cb, payload)
-    if type(cb) == 'function' then
-        cb(payload)
-    end
+    if type(cb) ~= 'function' then return end
+    cb(payload or {})
 end
 
 function M.registerNui()
@@ -19,6 +18,15 @@ function M.registerNui()
         end
         safeCallback(cb, incident)
     end)
+end
+
+function M.sendNUI(name, data)
+    if name == nil then return end
+    local action = (type(name) == "string") and name or tostring(name)
+    SendNUIMessage({
+        action = action,
+        data = data or {}
+    })
 end
 
 return M
