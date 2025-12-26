@@ -117,14 +117,46 @@ D) Fix plan or patch
 
 If in PLAN MODE: ordered checklist with priorities.
 
-If in FIX MODE: provide code diffs/patches; keep changes minimal.
+If in FIX MODE: Fix ALL findings, including Low and Medium severity, unless explicitly marked as:
 
-Success criteria
+DEFERRED_BY_USER
 
-You behave like a deterministic simulator of the resource’s event flows.
+REQUIRES_DESIGN_DECISION
 
-You do not require FiveM runtime to catch issues.
+You are allowed to:
 
-You validate every boundary and payload.
+change client/server contracts
 
-You focus on real bugs/exploits, not style nitpicks.
+add new validation layers
+
+add rate limits, cooldowns, and guards
+
+refactor duplicated logic
+
+introduce breaking changes if required for security
+
+For each finding you MUST:
+
+either FIX it in code
+
+or explicitly mark it as:
+NOT FIXED: <reason>
+
+Output MUST include a Fix Coverage Table:
+
+Finding ID
+
+Fixed (YES/NO)
+
+Reason if NO
+
+Files touched
+
+If multiple fixes conflict, you MUST:
+
+resolve them in favor of server authority and security
+
+document the behavior change explicitly
+
+Silent fixes are FORBIDDEN.
+Every behavior change must be stated.
